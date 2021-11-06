@@ -16,3 +16,10 @@ export interface SWCharacter {
   edited: Date;
   url: string;
 }
+
+export interface Page {
+  count: number;      // total of characters
+  next: string;       // URL of the next page
+  previous: string;   // URL of the previous page
+  results: Array<SWCharacter>;  // current page characters
+}

@@ -3,6 +3,7 @@ import {HttpClient, HttpErrorResponse} from "@angular/common/http";
 import {Observable, throwError} from "rxjs";
 import {environment} from "../../environments/environment";
 import {catchError} from "rxjs/operators";
+import { Page } from "../models/models";
 
 @Injectable({
   providedIn: 'root'
@@ -12,12 +13,18 @@ export class CharacterService {
   constructor(private http: HttpClient) {
   }
 
-  // GET
-  getStarWarsCharacters(): Observable<any> {
-    return this.http.get(environment.BASE_URL)
+  // Get Characters per Page
+  getStarWarsCharacters(pageUrl?: string): Observable<Page> {
+    let url = environment.BASE_URL;
+
+    if (pageUrl) {
+      url = pageUrl;
+    }
+
+    return this.http.get<Page>(url)
       .pipe(
         catchError(err => {
-          let errMessage: string = "";
+          let errMessage: string;
           if (err.error instanceof ErrorEvent) {
             errMessage = `Error: ${err.error.message}`;
           } else {
@@ -27,6 +34,7 @@ export class CharacterService {
         })
       );
   }
+
 
   getServerErrorMessage(err: HttpErrorResponse) {
     switch (err.status) {
