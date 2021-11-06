@@ -1,2 +1,10 @@
+@import url('https://fonts.googleapis.com/css2?family=Bungee&family=Montserrat:wght@300;500&display=swap');
+
+@import 'customize_bootstrap.scss';
 @import "~bootstrap/scss/bootstrap";
 
+body {
+  background: url("app/assets/jeremy-perkins-uhjiu8FjnsQ-unsplash.jpg") center center no-repeat;
+  background-size: cover;
+  min-height: 100vh;
+}
