@@ -23,3 +23,20 @@ export interface Page {
   previous: string;   // URL of the previous page
   results: Array<SWCharacter>;  // current page characters
 }
+
+export interface Planet {
+  name: string;
+  rotation_period:string;
+  orbital_period:string;
+  diameter:number;
+  climate:string;
+  gravity:string;
+  terrain:string;
+  surface_water:number;
+  population:number;
+  residents: Array<String>;
+  films: Array<String>;
+  created: string;
+  edited: string;
+  url: string;
+}

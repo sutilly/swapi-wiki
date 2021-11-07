@@ -31,6 +31,9 @@ export class CharacterListComponent implements OnInit {
     this.charService.getCharactersByName(searchTerm).subscribe(res => {
       this.currentPage = res;
       this.currentPageNumber = this.getCurrentPageNumber(res)
+    }, err => {
+      this.displayError(err)
+      return [];
     })
   }
 
@@ -39,7 +42,7 @@ export class CharacterListComponent implements OnInit {
       this.currentPage = res;
       this.currentPageNumber = this.getCurrentPageNumber(res);
     }, err => {
-      // TODO display error message
+      this.displayError(err)
       return [];
     })
   }
@@ -50,6 +53,10 @@ export class CharacterListComponent implements OnInit {
 
   getCurrentPageNumber(currentPage: Page) {
     return !currentPage.previous ? 1 : parseInt(currentPage.previous.replace(/[^0-9]/g, "")) + 1;
+  }
+
+  displayError(err: string) {
+    this.errorMessage = err;
   }
 
 }

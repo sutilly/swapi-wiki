@@ -50,10 +50,10 @@ export class CharacterService {
     let errMessage = "Unknown error";
     if (err.error instanceof ErrorEvent) {
       // Client side Error
-      errMessage = `Error: ${err.error.message}`;
+      errMessage = `A client side error occurred`;
     } else {
       // Server Side Error
-      errMessage = `Error Code: ${err.status}\nMessage: ${err.message}`;
+      errMessage = `A server side error occurred – Error Code ${err.status}`;
     }
     return throwError(errMessage)
   }
