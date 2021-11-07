@@ -1,9 +1,11 @@
 import {Injectable} from '@angular/core';
 import {HttpClient, HttpErrorResponse} from "@angular/common/http";
-import {Observable, throwError} from "rxjs";
+import {EMPTY, Observable, throwError} from "rxjs";
 import {environment} from "../../environments/environment";
-import {catchError} from "rxjs/operators";
-import { Page } from "../models/models";
+import {catchError, expand, map, reduce} from "rxjs/operators";
+import {Page, SWCharacter} from "../models/models";
+
+const CHAR_SERVICE_URL = `${environment.BASE_URL}people/`
 
 @Injectable({
   providedIn: 'root'
@@ -13,40 +15,46 @@ export class CharacterService {
   constructor(private http: HttpClient) {
   }
 
-  // Get Characters per Page
-  getStarWarsCharacters(pageUrl?: string): Observable<Page> {
-    let url = environment.BASE_URL;
+  // Get characters per Page
+  getStarWarsCharacters(pageUrl = CHAR_SERVICE_URL): Observable<Page> {
+    return this.http.get<Page>(pageUrl)
+      .pipe(
+        catchError(err => {
+          return this.handleError(err);
+        })
+      )
+  }
 
-    if (pageUrl) {
-      url = pageUrl;
-    }
+  // Get all characters
+  getAllStarWarsCharacters(): Observable<SWCharacter[]> {
+    return this.getStarWarsCharacters().pipe(
+      expand(res => res.next ? this.getStarWarsCharacters(res.next) : EMPTY),
+      map(res => res.results),
+      reduce((accData, data) => accData.concat(...data)),
+    )
+  }
 
+  // Get characters by search term
+  getCharactersByName(searchTerm: string): Observable<Page> {
+    let url = `${CHAR_SERVICE_URL}/?search=${searchTerm}`;
     return this.http.get<Page>(url)
       .pipe(
         catchError(err => {
-          let errMessage: string;
-          if (err.error instanceof ErrorEvent) {
-            errMessage = `Error: ${err.error.message}`;
-          } else {
-            errMessage = this.getServerErrorMessage(err);
-          }
-          return throwError(errMessage)
+          return this.handleError(err);
         })
-      );
+      )
   }
 
-
-  getServerErrorMessage(err: HttpErrorResponse) {
-    switch (err.status) {
-      case 404: {
-        return `Not found: ${err.message}`;
-      }
-      case 500: {
-        return `Internal Server Error: ${err.message}`;
-      }
-      default: {
-        return `Unknown Server Error: ${err.message}`;
-      }
+  // Error Handling
+  private handleError(err: HttpErrorResponse) {
+    let errMessage = "Unknown error";
+    if (err.error instanceof ErrorEvent) {
+      // Client side Error
+      errMessage = `Error: ${err.error.message}`;
+    } else {
+      // Server Side Error
+      errMessage = `Error Code: ${err.status}\nMessage: ${err.message}`;
     }
+    return throwError(errMessage)
   }
 }
