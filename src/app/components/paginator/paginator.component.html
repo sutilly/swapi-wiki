@@ -1,5 +1,5 @@
 <div class="container-md d-flex justify-content-center align-items-baseline text-center my-4" *ngIf="page">
   <button class="btn btn-pagination mx-2 text-primary fw-bold" (click)="pageChange.emit(page.previous)" [disabled]="!page.previous">&lsaquo;</button>
-  <p *ngIf="pageNumber" class="text-white mx-3">Page {{pageNumber}}</p>
+  <p *ngIf="pageNumber" class="text-white page-number mx-3">Page {{pageNumber}}</p>
   <button class="btn btn-pagination mx-2 text-primary fw-bold" (click)="pageChange.emit(page.next)" [disabled]="!page.next">&rsaquo;</button>
 </div>

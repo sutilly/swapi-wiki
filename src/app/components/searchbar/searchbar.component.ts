@@ -1,5 +1,5 @@
-import { Component, OnInit } from '@angular/core';
-import {Router} from "@angular/router";
+import {Component, OnInit} from '@angular/core';
+import {ActivatedRoute, Router} from "@angular/router";
 
 @Component({
   selector: 'app-searchbar',
@@ -9,18 +9,29 @@ import {Router} from "@angular/router";
 export class SearchbarComponent implements OnInit {
 
   searchTerm: string;
+  showClearButton: boolean = false;
 
-  constructor(private router: Router) { }
+  constructor(private router: Router, private route: ActivatedRoute) {
+  }
 
   ngOnInit(): void {
+    this.route.params.subscribe(params => {
+      if (params.searchTerm) {
+        this.searchTerm = params.searchTerm; }
+    })
   }
 
   search() {
-    if(this.searchTerm)
+    if (this.searchTerm) {
+      this.showClearButton = true;
       this.router.navigateByUrl('characters/search/' + this.searchTerm);
+    }
+    // todo: add search input validation and display message when empty
   }
 
   showAll() {
-     this.router.navigateByUrl('characters/list');
+    this.showClearButton = false;
+    this.searchTerm = "";
+    this.router.navigateByUrl('characters/list');
   }
 }

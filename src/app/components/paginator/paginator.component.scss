@@ -1,6 +1,8 @@
-@import "src/styles";
-
 .btn-pagination {
   border: 1px solid white;
-  background: $black;
+  background: black;
+}
+
+.page-number {
+  min-width: 4.5rem;
 }
