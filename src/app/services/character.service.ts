@@ -4,6 +4,7 @@ import {EMPTY, Observable, throwError} from "rxjs";
 import {environment} from "../../environments/environment";
 import {catchError, expand, map, reduce} from "rxjs/operators";
 import {Page, SWCharacter} from "../models/models";
+import {PlanetService} from "./planet.service";
 
 const CHAR_SERVICE_URL = `${environment.BASE_URL}people/`
 
@@ -12,18 +13,21 @@ const CHAR_SERVICE_URL = `${environment.BASE_URL}people/`
 })
 export class CharacterService {
 
-  constructor(private http: HttpClient) {
+  constructor(private http: HttpClient, private planetService: PlanetService) {
   }
 
   // Get characters per Page
   getStarWarsCharacters(pageUrl = CHAR_SERVICE_URL): Observable<Page> {
     return this.http.get<Page>(pageUrl)
       .pipe(
+        map( page => {
+          return this.getCharacterHomeworld(page)
+          }),
         catchError(err => {
           return this.handleError(err);
         })
-      )
-  }
+  )
+}
 
   // Get all characters
   getAllStarWarsCharacters(): Observable<SWCharacter[]> {
@@ -39,15 +43,27 @@ export class CharacterService {
     let url = `${CHAR_SERVICE_URL}/?search=${searchTerm}`;
     return this.http.get<Page>(url)
       .pipe(
+        map( page => {
+          return this.getCharacterHomeworld(page)
+        }),
         catchError(err => {
           return this.handleError(err);
         })
       )
   }
 
+  // Get Character Homeworld
+  getCharacterHomeworld(page: Page) {
+    page.results.map(person => {
+      this.planetService.getPlanetByUrl(person.homeworld).subscribe(
+        homeworld => person.homeworld = homeworld.name
+      )})
+    return page;
+  }
+
   // Error Handling
   private handleError(err: HttpErrorResponse) {
-    let errMessage = "Unknown error";
+    let errMessage;
     if (err.error instanceof ErrorEvent) {
       // Client side Error
       errMessage = `A client side error occurred`;

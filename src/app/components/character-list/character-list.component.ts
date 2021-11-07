@@ -29,21 +29,17 @@ export class CharacterListComponent implements OnInit {
 
   loadSearchResult(searchTerm: string) {
     this.charService.getCharactersByName(searchTerm).subscribe(res => {
-      this.currentPage = res;
-      this.currentPageNumber = this.getCurrentPageNumber(res)
+      this.handlePageResult(res);
     }, err => {
-      this.displayError(err)
-      return [];
+      return this.handleAndDisplayError(err)
     })
   }
 
   loadPage(url?: string) {
     this.charService.getStarWarsCharacters(url).subscribe(res => {
-      this.currentPage = res;
-      this.currentPageNumber = this.getCurrentPageNumber(res);
+      this.handlePageResult(res);
     }, err => {
-      this.displayError(err)
-      return [];
+      return this.handleAndDisplayError(err)
     })
   }
 
@@ -51,12 +47,19 @@ export class CharacterListComponent implements OnInit {
     this.loadPage(url);
   }
 
+  handlePageResult(res: Page) {
+    this.currentPage = res;
+    this.currentPageNumber = this.getCurrentPageNumber(res);
+  }
+
+  handleAndDisplayError(err: string) {
+    this.errorMessage = err;
+    return [];
+  }
+
   getCurrentPageNumber(currentPage: Page) {
     return !currentPage.previous ? 1 : parseInt(currentPage.previous.replace(/[^0-9]/g, "")) + 1;
   }
 
-  displayError(err: string) {
-    this.errorMessage = err;
-  }
 
 }

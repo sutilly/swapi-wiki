@@ -1,6 +1,5 @@
 import {Component, Input, OnInit} from '@angular/core';
 import {SWCharacter} from "../../models/models";
-import {PlanetService} from "../../services/planet.service";
 
 @Component({
   selector: 'app-character-list-item',
@@ -10,19 +9,11 @@ import {PlanetService} from "../../services/planet.service";
 export class CharacterListItemComponent implements OnInit {
 
   @Input() char: SWCharacter;
-  homeplanet: string;
 
-  constructor(private planetService: PlanetService) {
+  constructor() {
   }
 
   ngOnInit(): void {
-    if (this.char) {
-      this.planetService.getPlanetByUrl(this.char.homeworld).subscribe(res => {
-        this.homeplanet = res.name;
-      }, err => {
-        this.homeplanet = "Unknown";
-      })
-    }
   }
 
 }
