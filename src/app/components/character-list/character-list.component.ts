@@ -1,7 +1,7 @@
-import { Component, OnInit } from '@angular/core';
-import {Page, SWCharacter} from "../../models/models";
+import {Component, OnInit} from '@angular/core';
+import {Page} from "../../models/models";
 import {CharacterService} from "../../services/character.service";
-import {Observable, Subject} from "rxjs";
+import {ActivatedRoute} from "@angular/router";
 
 @Component({
   selector: 'app-character-list',
@@ -14,27 +14,42 @@ export class CharacterListComponent implements OnInit {
   currentPageNumber: string | number;
   errorMessage: string = "";
 
-  constructor(private charService: CharacterService) { }
+  constructor(private charService: CharacterService, private route: ActivatedRoute) {
+  }
 
   ngOnInit(): void {
-    this.loadPage();
+    this.route.params.subscribe(params => {
+      if (params.searchTerm) {
+        this.loadSearchResult(params.searchTerm);
+      } else {
+        this.loadPage();
+      }
+    })
   }
 
-  onPageChange(url:string) {
-    this.loadPage(url);
+  loadSearchResult(searchTerm: string) {
+    this.charService.getCharactersByName(searchTerm).subscribe(res => {
+      this.currentPage = res;
+      this.currentPageNumber = this.getCurrentPageNumber(res)
+    })
   }
 
-  loadPage(url?:string) {
+  loadPage(url?: string) {
     this.charService.getStarWarsCharacters(url).subscribe(res => {
       this.currentPage = res;
-      this.currentPageNumber = this.getCurrentPageNumber(this.currentPage);
+      this.currentPageNumber = this.getCurrentPageNumber(res);
     }, err => {
       // TODO display error message
       return [];
     })
   }
 
-  getCurrentPageNumber(page: Page) {
-    return !page.previous ? 1 :((parseInt(page.previous.replace("https://swapi.dev/api/people/?page=", "")) +1));
-    }
+  onPageChange(url: string) {
+    this.loadPage(url);
+  }
+
+  getCurrentPageNumber(currentPage: Page) {
+    return !currentPage.previous ? 1 : parseInt(currentPage.previous.replace(/[^0-9]/g, "")) + 1;
+  }
+
 }

@@ -8,6 +8,9 @@ import { HeaderComponent } from './components/header/header.component';
 import { CharacterListComponent } from './components/character-list/character-list.component';
 import { CharacterListItemComponent } from './components/character-list-item/character-list-item.component';
 import { PaginatorComponent } from './components/paginator/paginator.component';
+import {FormsModule, ReactiveFormsModule} from "@angular/forms";
+import { CharacterPageComponent } from './components/character-page/character-page.component';
+import { SearchbarComponent } from './components/searchbar/searchbar.component';
 
 @NgModule({
   declarations: [
@@ -15,12 +18,16 @@ import { PaginatorComponent } from './components/paginator/paginator.component';
     HeaderComponent,
     CharacterListComponent,
     CharacterListItemComponent,
-    PaginatorComponent
+    PaginatorComponent,
+    CharacterPageComponent,
+    SearchbarComponent
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
-    HttpClientModule
+    HttpClientModule,
+    ReactiveFormsModule,
+    FormsModule
   ],
   providers: [],
   bootstrap: [AppComponent]
