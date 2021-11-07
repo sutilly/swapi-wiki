@@ -48,18 +48,20 @@ export class CharacterListComponent implements OnInit {
   }
 
   handlePageResult(res: Page) {
+    if (!res.results.length) {
+      this.errorMessage = "No data found."
+    } else {
     this.currentPage = res;
     this.currentPageNumber = this.getCurrentPageNumber(res);
+    }
   }
 
   handleAndDisplayError(err: string) {
     this.errorMessage = err;
-    return [];
   }
 
   getCurrentPageNumber(currentPage: Page) {
     return !currentPage.previous ? 1 : parseInt(currentPage.previous.replace(/[^0-9]/g, "")) + 1;
   }
-
 
 }
