@@ -11,6 +11,7 @@ import { PaginatorComponent } from './components/paginator/paginator.component';
 import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import { CharacterPageComponent } from './components/character-page/character-page.component';
 import { SearchbarComponent } from './components/searchbar/searchbar.component';
+import { UrlLoadingPipe } from './pipes/url-loading.pipe';
 
 @NgModule({
   declarations: [
@@ -20,7 +21,8 @@ import { SearchbarComponent } from './components/searchbar/searchbar.component';
     CharacterListItemComponent,
     PaginatorComponent,
     CharacterPageComponent,
-    SearchbarComponent
+    SearchbarComponent,
+    UrlLoadingPipe
   ],
   imports: [
     BrowserModule,
